@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * @var \Smartosc\Article\Block\Detail $block
+ */
+
+$data = $block->getDetailArticle()->getData();
+
+?>
+
+<?php foreach ($data as $article): ?>
+<h2><?= $article['post_content'] ?></h2><br/>
+<h4><?= $article['tags'] ?></h4>
+<?php endforeach;?>
+
+</body>
+</html>

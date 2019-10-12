@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      layout="2columns-right"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <title>Article</title>
+    </head>
+    <referenceContainer name="content">
+        <block ifconfig="article/configuration/enable" class="Smartosc\Article\Block\Display"
+               name="article_display"
+               template="Smartosc_Article::article.phtml" />
+    </referenceContainer>
+</page>

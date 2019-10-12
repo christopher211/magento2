@@ -1,0 +1,101 @@
+<?php
+//echo "ok"; exit;
+echo "<pre>";
+//print_r($this->getBestsellerProduct()->getPageSize());
+foreach ($this->getBestsellerProduct() as $item) {
+    print_r($item);
+}
+echo "</pre>";
+exit;
+if ($exist = ($this->getBestsellerProduct() && $this->getBestsellerProduct()->getPageSize())) {
+    $fetProdCollection = $this->getBestsellerProduct();
+    $productCount = $this->getProductLimit();
+    $imageWidth = $this->getProductImageWidth();
+    $imageHeight = $this->getProductImageHeight();
+    $mode = 'grid';
+    $title = __('Bestseller Products');
+    $type = 'widget-bestseller-grid';
+    $image = 'bestseller_products_content_widget_grid';
+}
+?>
+<?php if ($exist): ?>
+<div class="block widget block-bestseller-products <?php echo $mode; ?>">
+    <div class="block-title">
+        <strong role="heading" aria-level="2"><?php echo $title; ?></strong>
+    </div>
+    <div class="block-content">
+    <?php echo '<!-- ' . $image . '-->' ?>
+        <div class="products-<?php echo $mode; ?> <?php   echo $mode; ?>">
+            <ol class="product-items <?php   echo $type; ?>">
+                <?php $iterator = 1; ?>
+                <?php foreach ($fetProdCollection as $item):
+                    $prod = $block->loadProduct($item->getProductId());
+                    ?>
+                    <?php echo ($iterator++ == 1) ? '<li class="product-item">' : '</li><li class="product-item">' ?>
+                    <div class="product-item-info">
+                        <?php
+                        $imageUrl = $block->imageHelperObj()->init($prod, 'product_page_image_small')
+                            ->setImageFile($prod->getFile())
+                            ->resize($imageWidth, $imageHeight)
+                            ->getUrl();
+                        ?>
+                        <a href="<?php echo $prod->getProductUrl() ?>" class="product-item-photo">
+                            <img src="<?php echo $imageUrl; ?>" alt="<?php echo $this->escapeHtml($prod->getName()) ?>"/>
+                        </a>
+                        <div class="product-item-details">
+                            <strong class="product-item-name">
+                                <a title="<?php echo $block->escapeHtml($prod->getName()) ?>"
+                                   href="<?php echo $prod->getProductUrl() ?>"
+                                   class="product-item-link">
+                                    <?php echo $block->escapeHtml($prod->getName()) ?>
+                                </a>
+                            </strong>
+                            <?php
+                            echo $this->getProductPriceHtml($prod, $type);
+                            ?>
+                            <div class="product-item-actions">
+                                <div class="actions-primary">
+                                    <?php if ($prod->isSaleable()): ?>
+                                        <?php if ($prod->getTypeInstance()->hasRequiredOptions($prod)): ?>
+                                            <button class="action tocart primary"
+                                                    data-mage-init='{"redirectUrl":{"url":"
+                                                    <?php echo $block->getAddToCartUrl($prod) ?>"}}' type="button"
+                                                    title="<?php echo __('Add to Cart') ?>">
+                                                <span><?php echo __('Add to Cart') ?></span>
+                                            </button>
+                                        <?php else: ?>
+                                        <?php
+                                        $postDataHelper = $this->helper('Magento\Framework\Data\Helper\PostHelper');
+                                        $postData = $postDataHelper->getPostData($block->getAddToCartUrl($prod), ['product' => $prod->getId()]);
+                                        ?>
+                                        <button class="action tocart primary"
+                                                data-post='<?php echo $postData; ?>'
+                                                type="button"
+                                                title="<?php echo __('Add to Cart') ?> ">
+                                            <span><?php echo __('Add to Cart') ?></span>
+                                        </button>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <?php if ($prod->getIsSalable()): ?>
+                                            <div class='stock available'>
+                                                <span>
+                                                    <?php echo __('In stock') ?>
+                                                </span>
+                                            </div>
+                                        <?php else: ?>
+                                            <div class='stock unavailable'>
+                                                <span><?php echo __('Out of stock') ?></span>
+                                            </div>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php echo($iterator == count($fetProdCollection)+1) ? '</li>' : '' ?>
+                <?php endforeach ?>
+            </ol>
+        </div>
+    </div>
+</div>
+<?php endif;?>

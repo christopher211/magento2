@@ -1,0 +1,78 @@
+<?php
+
+/**
+ * @var \Smartosc\Article\Block\Display $block
+ */
+
+//var_dump($block->getPagerHtml());
+//die;
+
+$data = $block->getArticle()->getData();
+
+?>
+
+<style>
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 30px;
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+
+    .post-id {
+        width: 2%
+    }
+
+    .post-name {
+        width: 30%
+    }
+
+</style>
+
+<table>
+    <tr>
+        <th class="post-id">Id</th>
+        <th class="post-name">Name</th>
+        <th>URL</th>
+    </tr>
+    <?php if ($data && count($data)): ?>
+    <?php
+    foreach ($data as $article) :
+        ?>
+            <tr>
+                <td><?=$article['id']?></td>
+                <td><?=$article['name']?></td>
+                <td><a href="<?=$block->getArticleUrl($article['id']) ?>"><?=$article['url_key']?></a></td>
+            </tr>
+        <?php
+    endforeach;
+    ?>
+
+</table>
+
+<div style="justify-content: flex-end">
+    <?php if ($block->getPagerHtml()): ?>
+        <?php echo $block->getPagerHtml();?>
+    <?php endif;?>
+
+    <?php else:?>
+    <div>
+        <?php echo __('Article not available');?>
+    </div>
+    <?php endif;?>
+</div>
+
+
+
+</body>
+</html>
